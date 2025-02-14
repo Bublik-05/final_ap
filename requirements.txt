@@ -1,0 +1,4 @@
+streamlit
+langchain
+python-telegram-bot
+ollama
