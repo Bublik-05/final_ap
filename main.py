@@ -2,6 +2,24 @@ import streamlit as st
 from app.assistant import get_assistant_response
 from app.filter import contains_bad_words
 from app.memory import short_term_memory, save_to_long_term_memory, load_long_term_memory
+from telegram import Bot
+from app.callbacks import send_telegram_alert
+import asyncio
+
+if "test_message_sent" not in st.session_state:
+    st.session_state.test_message_sent = False
+
+if not st.session_state.test_message_sent:
+    asyncio.run(send_telegram_alert("✅ Бот запущен! Это тестовое сообщение при старте приложения."))
+    st.session_state.test_message_sent = True
+
+token="7581453769:AAEBNxwmaqVUvq_AbP7p1JRhMEJFcCLLaP0"
+chat_id="5768005834"
+
+async def send_telegram_alert(message):
+    bot = Bot(token)
+    await bot.send_message(chat_id, text=message)
+
 
 st.title("ИИ Ассистент с фильтром текста и памятью")
 
@@ -48,8 +66,10 @@ else:
 
     if st.button("Отправить"):
         if user_message:
+            
             if contains_bad_words(user_message):
                 st.error("Обнаружена ненормативная лексика. Пожалуйста, переформулируйте ваш вопрос.")
+                asyncio.run(send_telegram_alert(f"⚠️ Пользователь отправил плохой текст: {user_message}"))
             else:
                 memory_type = st.session_state.chat_memory_type[st.session_state.current_chat]
 

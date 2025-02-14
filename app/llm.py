@@ -1,4 +1,4 @@
-from langchain.chat_models import ChatOllama
+from langchain_ollama import ChatOllama
 
 def get_llm():
-    return ChatOllama(model="llama3.2")  # или phi
+    return ChatOllama(model="llama3.2")

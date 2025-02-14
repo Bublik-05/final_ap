@@ -1,6 +1,5 @@
 from app.llm import get_llm
 from langchain.prompts import PromptTemplate
-from langchain.chains import LLMChain
 
 def get_assistant_response(user_message):
     llm = get_llm()
@@ -10,7 +9,7 @@ def get_assistant_response(user_message):
         template="Ты дружелюбный помощник. Ответь на вопрос пользователя:\n{question}"
     )
 
-    chain = LLMChain(llm=llm, prompt=prompt_template)
+    chain = prompt_template | llm
 
-    response = chain.run(question=user_message)
-    return response
+    response = chain.invoke({"question": user_message})
+    return response.content if hasattr(response, 'content') else response
