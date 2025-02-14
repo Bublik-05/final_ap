@@ -6,11 +6,13 @@ from telegram import Bot
 from app.callbacks import send_telegram_alert
 import asyncio
 
+
+
 if "test_message_sent" not in st.session_state:
     st.session_state.test_message_sent = False
 
 if not st.session_state.test_message_sent:
-    asyncio.run(send_telegram_alert("✅ Бот запущен! Это тестовое сообщение при старте приложения."))
+    asyncio.run(send_telegram_alert("✅ Бот запущен!"))
     st.session_state.test_message_sent = True
 
 token="7581453769:AAEBNxwmaqVUvq_AbP7p1JRhMEJFcCLLaP0"
@@ -21,7 +23,7 @@ async def send_telegram_alert(message):
     await bot.send_message(chat_id, text=message)
 
 
-st.title("ИИ Ассистент с фильтром текста и памятью")
+st.title("FRIDAY")
 
 # Инициализация состояния сессии
 if "chat_history" not in st.session_state:
@@ -52,7 +54,7 @@ if st.session_state.chat_history:
     st.session_state.current_chat = selected_chat
 
 if not st.session_state.current_chat:
-    st.write("Создайте новый чат слева")
+    st.write("новый чат")
 else:
     # Выбор памяти для текущего чата
     st.session_state.chat_memory_type[st.session_state.current_chat] = st.radio(
@@ -68,13 +70,13 @@ else:
         if user_message:
             
             if contains_bad_words(user_message):
-                st.error("Обнаружена ненормативная лексика. Пожалуйста, переформулируйте ваш вопрос.")
+                st.error("Сам такой, я не буду это принимать!")
                 asyncio.run(send_telegram_alert(f"⚠️ Пользователь отправил плохой текст: {user_message}"))
             else:
                 memory_type = st.session_state.chat_memory_type[st.session_state.current_chat]
 
                 if memory_type == "Краткосрочная память":
-                    short_term_memory.save_context({"input": user_message}, {"output": "Ответ генерируется..."})
+                    short_term_memory.save_context({"input": user_message}, {"output": "Подожди..."})
                     response = get_assistant_response(user_message)
                     short_term_memory.save_context({"input": user_message}, {"output": response})
 
@@ -86,7 +88,7 @@ else:
 
                 # Сохранение в историю чата
                 st.session_state.chat_history[st.session_state.current_chat].append(f"Вы: {user_message}")
-                st.session_state.chat_history[st.session_state.current_chat].append(f"ИИ: {response}")
+                st.session_state.chat_history[st.session_state.current_chat].append(f"FRIDAY: {response}")
 
     # Показать историю текущего чата
     st.write("История диалога:")
